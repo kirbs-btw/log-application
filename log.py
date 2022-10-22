@@ -3,9 +3,30 @@ import tkinter as tk
 from tkinter import ttk
 import sqlite3
 
+class sqlConn:
+    def __init__(self, path):
+        self.conn = sqlite3.connect(path)
+        self.cur = self.conn.cursor()
+
+    def execute(self, command):
+        out = self.cur.execute(command)
+        self.conn.commit()
+
+        return out
+
+    def check(self, table):
+        command = 'SELECT * FROM {}'.format(table)
+        content = self.execute(command).fetchall()
+        print(content)
+
+    def reset(self, table):
+        command = 'DELETE FROM {}'.format(table)
+        self.execute(command)
+
+conn = sqlConn('log.sql')
+
 def add_to_log(logEntry):
-    conn = sqlite3.connect("log.sql")
-    cur = conn.cursor()
+
 
     content = logEntry.get()
     logEntry.delete(0, 9999999)
@@ -18,10 +39,13 @@ def add_to_log(logEntry):
     command = 'INSERT INTO log VALUES("{}", "{}", "{}")'.format(date, time, content)
     print(command)
 
-    cur.execute(command)
-    conn.commit()
-    conn.close()
+    conn.execute(command)
 
+def insert(canvas):
+    command = 'SELECT * FROM log'
+    entry = conn.execute(command).fetchall()
+    for log in entry:
+        print(log)
 
 def main():
     root = tk.Tk()
@@ -35,6 +59,15 @@ def main():
     addButton = tk.Button(canvas, text="add", command=lambda: add_to_log(logEntry))
     addButton.place(relx=0.8, rely=0.9)
 
+    """
+    log canvas
+    """
+
+    logCanvas = tk.Canvas(canvas, bg="#ccccff")
+    logCanvas.place(relx=0.025, rely=0.025, relwidth=0.95, relheight=0.7)
+
+    getLog = tk.Button(canvas, text="get", command=lambda: insert(1))
+    getLog.place(relx=0.8, rely=0.8)
 
 
     root.mainloop()
