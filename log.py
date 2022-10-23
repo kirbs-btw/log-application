@@ -45,7 +45,9 @@ def insert(canvas):
     command = 'SELECT * FROM log'
     entry = conn.execute(command).fetchall()
     for log in entry:
-        print(log)
+        text = "{} {} {}".format(log[0], log[1], log[2])
+        tk.Label(canvas, text=text).pack()
+
 
 def main():
     root = tk.Tk()
@@ -66,7 +68,7 @@ def main():
     logCanvas = tk.Canvas(canvas, bg="#ccccff")
     logCanvas.place(relx=0.025, rely=0.025, relwidth=0.95, relheight=0.7)
 
-    getLog = tk.Button(canvas, text="get", command=lambda: insert(1))
+    getLog = tk.Button(canvas, text="get", command=lambda: insert(logCanvas))
     getLog.place(relx=0.8, rely=0.8)
 
 
