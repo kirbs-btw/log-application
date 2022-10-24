@@ -41,12 +41,12 @@ def add_to_log(logEntry):
 
     conn.execute(command)
 
-def insert(canvas):
+def insert(textBox):
     command = 'SELECT * FROM log'
     entry = conn.execute(command).fetchall()
     for log in entry:
-        text = "{} {} {}".format(log[0], log[1], log[2])
-        tk.Label(canvas, text=text).pack()
+        text = "{} {} {}\n".format(log[0], log[1], log[2])
+        textBox.insert(tk.END, text)
 
 
 def main():
@@ -65,10 +65,10 @@ def main():
     log canvas
     """
 
-    logCanvas = tk.Canvas(canvas, bg="#ccccff")
-    logCanvas.place(relx=0.025, rely=0.025, relwidth=0.95, relheight=0.7)
+    logTextbox = tk.Text(canvas, bg="#ccccff", height=2, width=30)
+    logTextbox.place(relx=0.025, rely=0.025, relwidth=0.95, relheight=0.7)
 
-    getLog = tk.Button(canvas, text="get", command=lambda: insert(logCanvas))
+    getLog = tk.Button(canvas, text="get", command=lambda: insert(logTextbox))
     getLog.place(relx=0.8, rely=0.8)
 
 
