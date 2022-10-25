@@ -25,9 +25,7 @@ class sqlConn:
 
 conn = sqlConn('log.sql')
 
-def add_to_log(logEntry):
-
-
+def add_to_log(logEntry, logTextbox):
     content = logEntry.get()
     logEntry.delete(0, 9999999)
     print(content)
@@ -41,13 +39,16 @@ def add_to_log(logEntry):
 
     conn.execute(command)
 
+    logText = "{} {} {}\n".format(date, time, content)
+    logTextbox.insert(tk.END, logText)
+
 def insert(textBox):
+    textBox.delete('1.0', tk.END)
     command = 'SELECT * FROM log'
     entry = conn.execute(command).fetchall()
     for log in entry:
         text = "{} {} {}\n".format(log[0], log[1], log[2])
         textBox.insert(tk.END, text)
-
 
 def main():
     root = tk.Tk()
@@ -58,19 +59,20 @@ def main():
     logEntry = tk.Entry(canvas)
     logEntry.place(relx=0.1, rely=0.9, relwidth=0.7, relheight=0.03)
 
-    addButton = tk.Button(canvas, text="add", command=lambda: add_to_log(logEntry))
-    addButton.place(relx=0.8, rely=0.9)
-
     """
     log canvas
     """
 
-    logTextbox = tk.Text(canvas, bg="#ccccff", height=2, width=30)
+    logTextbox = tk.Text(canvas, bg="#ffffff", height=2, width=30)
     logTextbox.place(relx=0.025, rely=0.025, relwidth=0.95, relheight=0.7)
 
-    getLog = tk.Button(canvas, text="get", command=lambda: insert(logTextbox))
-    getLog.place(relx=0.8, rely=0.8)
+    addButton = tk.Button(canvas, text="add", command=lambda: add_to_log(logEntry, logTextbox))
+    addButton.place(relx=0.8, rely=0.9)
 
+    getLog = tk.Button(canvas, text="get", command=lambda: insert(logTextbox))
+    getLog.place(relx=0.94, rely=0.025)
+
+    insert(logTextbox)
 
     root.mainloop()
 
